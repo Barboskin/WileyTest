@@ -5,19 +5,15 @@ import blocks.TopNavigationMenu;
 import org.junit.*;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
 import pages.HomePage;
 import pages.ProductPage;
 import pages.SearchPage;
 import pages.StudentsPage;
 import rules.WatcherRule;
-import utils.AlertHelper;
-import utils.ListHelper;
-import utils.WindowHelper;
+import utils.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Женя on 23.06.2017.
@@ -42,9 +38,7 @@ public class TestFirst {
 
     @Before
     public void setUpDriver(){
-        System.setProperty("webdriver.chrome.driver", Parameters.getWebdriverChromeDriver());
-        webDriver = new ChromeDriver();
-        webDriver.manage().timeouts().implicitlyWait(Parameters.getImplicityWait(), TimeUnit.SECONDS);
+        webDriver = DriverManager.getInstance();
         webDriver.get(Parameters.getBaseUrl());
         webDriver.manage().window().maximize();
     }
