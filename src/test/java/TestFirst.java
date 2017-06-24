@@ -10,10 +10,8 @@ import pages.ProductPage;
 import pages.SearchPage;
 import pages.StudentsPage;
 import rules.WatcherRule;
+import test_data.DataForTest;
 import utils.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Женя on 23.06.2017.
@@ -24,60 +22,18 @@ public class TestFirst {
     public WatcherRule watcherRule = new WatcherRule();
 
     private WebDriver webDriver;
-
-    //TestData
-    private List<String> namesOfItemTopMenu;
-    private List<String> titlesSubmenu;
-    private List<String> titlesLeftMenu;
-    private String textAlertEmptyEmail;
-    private String textAlertNotValidEmail;
-    private String notValidEmail;
-    private String textForSearch;
-    private String urlStudentsPage;
-    private String urlInstitutionsPage;
+    private DataForTest dataForTest;
 
     @Before
     public void setUpDriver(){
         webDriver = DriverManager.getInstance();
-        webDriver.get(Parameters.getBaseUrl());
         webDriver.manage().window().maximize();
+        webDriver.get(Parameters.getBaseUrl());
     }
 
     @Before
     public void setUpTestData(){
-        namesOfItemTopMenu = new ArrayList<>();
-        namesOfItemTopMenu.add("Home");
-        namesOfItemTopMenu.add("Subjects");
-        namesOfItemTopMenu.add("About Wiley");
-        namesOfItemTopMenu.add("Contact Us");
-        namesOfItemTopMenu.add("Help");
-
-        titlesSubmenu = new ArrayList<>();
-        titlesSubmenu.add("Students");
-        titlesSubmenu.add("Authors");
-        titlesSubmenu.add("Instructors");
-        titlesSubmenu.add("Librarians");
-        titlesSubmenu.add("Societies");
-        titlesSubmenu.add("Conferences");
-        titlesSubmenu.add("Booksellers");
-        titlesSubmenu.add("Corporations");
-        titlesSubmenu.add("Institutions");
-
-        titlesLeftMenu = new ArrayList<>();
-        titlesLeftMenu.add("Authors");
-        titlesLeftMenu.add("Librarians");
-        titlesLeftMenu.add("Booksellers");
-        titlesLeftMenu.add("Instructors");
-        titlesLeftMenu.add("Students");
-        titlesLeftMenu.add("Societies");
-        titlesLeftMenu.add("Corporate Partners");
-
-        textAlertEmptyEmail = "Please enter email address";
-        textAlertNotValidEmail = "Invalid email address.";
-        notValidEmail = "email";
-        textForSearch = "for dummies";
-        urlInstitutionsPage = "https://edservices.wiley.com/";
-        urlStudentsPage = "http://eu.wiley.com/WileyCDA/Section/id-404702.html";
+        dataForTest = new DataForTest();
     }
 
     @Test
@@ -87,20 +43,20 @@ public class TestFirst {
         HomePage homePage = new HomePage(webDriver);
         TopNavigationMenu topNavigationMenu = homePage.getTopNavigationMenu();
         Assert.assertTrue("Названия кнопок в верхнем меню на главной странице не соответсвуют ожидаемым",
-                topNavigationMenu.checkNameOfItemTopMenu(namesOfItemTopMenu));
+                topNavigationMenu.checkNameOfItemTopMenu(dataForTest.getNamesOfItemTopMenu()));
 
         //Step 2
         ResourcesList resourcesList = homePage.getResourcesList();
         Assert.assertEquals("Количество элементов подменю на главной странице не соответствует ожидаемому",
                 9, resourcesList.getCountItem());
-        Assert.assertTrue("Названия кнопок в верхнем меню на главной странице не соответствуют ожидаемым",
-                resourcesList.checkTitles(titlesSubmenu));
+        Assert.assertTrue("Названия кнопок в верхнем меню на странице [Home] не соответствуют ожидаемым",
+                resourcesList.checkTitles(dataForTest.getTitlesSubmenu()));
 
         //Step 3
         resourcesList.clickItem("Students");
         StudentsPage studentsPage = new StudentsPage(webDriver);
         Assert.assertEquals("Адрес страницы [Students] не соответствует ожидаемому",
-                urlStudentsPage, webDriver.getCurrentUrl());
+                dataForTest.getUrlStudentsPage(), webDriver.getCurrentUrl());
         Assert.assertTrue("Заголовок страницы [Students] не отображен на странице",
                  studentsPage.isDisplayedHeader());
 
@@ -108,7 +64,8 @@ public class TestFirst {
         LeftMenu leftMenu = studentsPage.getLeftMenu();
         Assert.assertEquals("Количество элементов левого меню на странице [Students] не соответствует ожидаемому",
                 7, leftMenu.getCountItem());
-        Assert.assertTrue("", leftMenu.checkTitles(titlesLeftMenu));
+        Assert.assertTrue("Названия кнопок в левом меню на странице [Students] не соответствуют ожидаемым",
+                leftMenu.checkTitles(dataForTest.getTitlesLeftMenu()));
 
         //Step 5
         Assert.assertTrue("В левом меню на странице [Students] пункт [Students] не является выбранным",
@@ -127,21 +84,21 @@ public class TestFirst {
         Alert alert = AlertHelper.getAlert(webDriver);
         Assert.assertNotEquals("Алерт не появился на странице [Home]", null, alert);
         Assert.assertEquals("Текст алерта на странице [Home] не соответствует ожидаемому",
-                textAlertEmptyEmail, alert.getText());
+                dataForTest.getTextAlertEmptyEmail(), alert.getText());
         alert.accept();
 
         //Step 8
-        signUpBlock.typeEmail(notValidEmail);
+        signUpBlock.typeEmail(dataForTest.getNotValidEmail());
         signUpBlock.clickNext();
         alert = AlertHelper.getAlert(webDriver);
         Assert.assertNotEquals("Алерт не появился на странице [Home]", null, alert);
         Assert.assertEquals("Текст алерта на странице [Home] не соответствует ожидаемому",
-                textAlertNotValidEmail, alert.getText());
+                dataForTest.getTextAlertNotValidEmail(), alert.getText());
         alert.accept();
 
         //Step 9
         topNavigationMenu = homePage.getTopNavigationMenu();
-        topNavigationMenu.typeSearchInput(textForSearch);
+        topNavigationMenu.typeSearchInput(dataForTest.getTextForSearch());
         topNavigationMenu.clickSearch();
         SearchPage searchPage = new SearchPage(webDriver);
         Assert.assertFalse("Список результов поиска на отобразился на странице [Search]",
@@ -166,7 +123,7 @@ public class TestFirst {
         Assert.assertTrue("Страница не открылась в новой вкладке", isNewWindow);
         String currentUrl = webDriver.getCurrentUrl();
         Assert.assertEquals("URL страницы [Institutions] не соответствует ожидаемому",
-                urlInstitutionsPage, currentUrl);
+                dataForTest.getUrlInstitutionsPage(), currentUrl);
     }
 
     @After
