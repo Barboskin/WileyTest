@@ -1,6 +1,6 @@
 package utils;
 
-import org.openqa.selenium.WebElement;
+import ru.yandex.qatools.htmlelements.element.TypifiedElement;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
  */
 public class ListHelper {
 
-    public static List<String> getListStringFromListWebElement(List<WebElement> webElements){
+    public static List<String> getListStringFromListWebElement(List<? extends TypifiedElement> webElements){
         List<String> result =  webElements.stream().map(x -> x.getText()).collect(Collectors.toList());
         return result;
     }
@@ -26,12 +26,20 @@ public class ListHelper {
         return flag;
     }
 
-    public static WebElement getWebElementByText(List<WebElement> webElements, String text){
-        List<WebElement> findElements = webElements.stream().filter(x -> x.getText().equals(text)).collect(Collectors.toList());
+    public static TypifiedElement getTypifiedElementByText(List<? extends TypifiedElement> webElements, String text){
+        List<TypifiedElement> findElements = webElements.stream().filter(x -> x.getText().equals(text)).collect(Collectors.toList());
         if (findElements.size() > 0){
             return findElements.get(0);
         } else {
             throw new RuntimeException(String.format("В заданном списке нет элемента с текстом [%s]", text));
         }
     }
+
+    public static boolean isEmpty(List<? extends Object> list){
+        if (list == null){
+            return false;
+        }
+        return list.isEmpty();
+    }
+
 }

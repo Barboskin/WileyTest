@@ -1,5 +1,7 @@
 package pages;
 
+import blocks.LeftMenu;
+import blocks.TopNavigationMenu;
 import org.openqa.selenium.support.FindBy;
 import ru.yandex.qatools.htmlelements.annotations.Name;
 import ru.yandex.qatools.htmlelements.element.TextBlock;
@@ -10,7 +12,6 @@ import ru.yandex.qatools.htmlelements.element.TextBlock;
 public abstract class AbstractWileyPage {
 
     private TopNavigationMenu topNavigationMenu;
-    private SubHeaderMenu subHeaderMenu;
     private LeftMenu leftMenu;
 
     @Name("Заголовок")
@@ -25,10 +26,6 @@ public abstract class AbstractWileyPage {
     //getters
     public TopNavigationMenu getTopNavigationMenu() {
         return topNavigationMenu;
-    }
-
-    public SubHeaderMenu getSubHeaderMenu() {
-        return subHeaderMenu;
     }
 
     public LeftMenu getLeftMenu() {
