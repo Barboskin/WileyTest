@@ -2,10 +2,7 @@ import blocks.LeftMenu;
 import blocks.ResourcesList;
 import blocks.SignUpBlock;
 import blocks.TopNavigationMenu;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -13,6 +10,7 @@ import pages.HomePage;
 import pages.ProductPage;
 import pages.SearchPage;
 import pages.StudentsPage;
+import rules.WatcherRule;
 import utils.AlertHelper;
 import utils.ListHelper;
 import utils.WindowHelper;
@@ -25,6 +23,9 @@ import java.util.concurrent.TimeUnit;
  * Created by Женя on 23.06.2017.
  */
 public class TestFirst {
+
+    @Rule
+    public WatcherRule watcherRule = new WatcherRule();
 
     private WebDriver webDriver;
 
@@ -45,6 +46,7 @@ public class TestFirst {
         webDriver = new ChromeDriver();
         webDriver.manage().timeouts().implicitlyWait(Parameters.getImplicityWait(), TimeUnit.SECONDS);
         webDriver.get(Parameters.getBaseUrl());
+        webDriver.manage().window().maximize();
     }
 
     @Before
