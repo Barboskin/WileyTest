@@ -11,7 +11,10 @@ import pages.SearchPage;
 import pages.StudentsPage;
 import rules.WatcherRule;
 import test_data.DataForTest;
-import utils.*;
+import utils.AlertHelper;
+import utils.DriverManager;
+import utils.Parameters;
+import utils.WindowHelper;
 
 /**
  * Created by Женя on 23.06.2017.
@@ -102,7 +105,7 @@ public class TestFirst {
         topNavigationMenu.clickSearch();
         SearchPage searchPage = new SearchPage(webDriver);
         Assert.assertFalse("Список результов поиска на отобразился на странице [Search]",
-                ListHelper.isEmpty(searchPage.getListResultItems()));
+                searchPage.checkListResultsIsEmpty());
 
         //Step 10
         String name = searchPage.clickOnRandomResultItem();
