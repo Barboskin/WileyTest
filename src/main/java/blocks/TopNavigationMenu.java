@@ -1,6 +1,7 @@
 package blocks;
 
 
+import org.junit.Assert;
 import org.openqa.selenium.support.FindBy;
 import ru.yandex.qatools.htmlelements.annotations.Name;
 import ru.yandex.qatools.htmlelements.element.Button;
@@ -34,12 +35,12 @@ public class TopNavigationMenu extends HtmlElement {
     @FindBy(xpath = ".//input[@type = 'submit']")
     private Button searchButton;
 
-    public boolean checkNameOfItemTopMenu(List<String> expectedList){
+    public void checkNameOfItemTopMenu(List<String> expectedList){
         List<String> actualList = ListHelper.getListStringFromListWebElement(listTopNavigationMenuButton);
         log.info(String.format("Проверяем значения списка кнопок верхнего меню. Ожидаемые: [%s]. Актуальные: [%s]",
                 expectedList.toString(), actualList.toString()));
         boolean flag = ListHelper.compareListStringByContent(actualList, expectedList);
-        return flag;
+        Assert.assertTrue("Названия кнопок в верхнем меню на главной странице не соответсвуют ожидаемым", flag);
     }
 
     public void clickItem(String itemText){

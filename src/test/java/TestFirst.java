@@ -2,7 +2,10 @@ import blocks.LeftMenu;
 import blocks.ResourcesList;
 import blocks.SignUpBlock;
 import blocks.TopNavigationMenu;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.WebDriver;
 import pages.HomePage;
@@ -11,10 +14,7 @@ import pages.SearchPage;
 import pages.StudentsPage;
 import rules.WatcherRule;
 import test_data.DataForTest;
-import utils.AlertHelper;
-import utils.DriverManager;
-import utils.Parameters;
-import utils.WindowHelper;
+import utils.*;
 
 /**
  * Created by Женя on 23.06.2017.
@@ -45,36 +45,27 @@ public class TestFirst {
         //Step 1
         HomePage homePage = new HomePage(webDriver);
         TopNavigationMenu topNavigationMenu = homePage.getTopNavigationMenu();
-        Assert.assertTrue("Названия кнопок в верхнем меню на главной странице не соответсвуют ожидаемым",
-                topNavigationMenu.checkNameOfItemTopMenu(dataForTest.getNamesOfItemTopMenu()));
+        topNavigationMenu.checkNameOfItemTopMenu(dataForTest.getNamesOfItemTopMenu());
 
         //Step 2
         ResourcesList resourcesList = homePage.getResourcesList();
-        Assert.assertEquals("Количество элементов подменю на главной странице не соответствует ожидаемому",
-                9, resourcesList.getCountItem());
-        Assert.assertTrue("Названия кнопок в верхнем меню на странице [Home] не соответствуют ожидаемым",
-                resourcesList.checkTitles(dataForTest.getTitlesSubmenu()));
+        resourcesList.checkCountItem(9);
+        resourcesList.checkTitles(dataForTest.getTitlesSubmenu());
 
         //Step 3
         resourcesList.clickItem("Students");
         StudentsPage studentsPage = new StudentsPage(webDriver);
-        Assert.assertEquals("Адрес страницы [Students] не соответствует ожидаемому",
-                dataForTest.getUrlStudentsPage(), webDriver.getCurrentUrl());
-        Assert.assertTrue("Заголовок страницы [Students] не отображен на странице",
-                 studentsPage.isDisplayedHeader());
+        AssertHelper.checkCurrentUrl(webDriver, dataForTest.getUrlStudentsPage());
+        studentsPage.isDisplayedHeader();
 
         //Step 4
         LeftMenu leftMenu = studentsPage.getLeftMenu();
-        Assert.assertEquals("Количество элементов левого меню на странице [Students] не соответствует ожидаемому",
-                7, leftMenu.getCountItem());
-        Assert.assertTrue("Названия кнопок в левом меню на странице [Students] не соответствуют ожидаемым",
-                leftMenu.checkTitles(dataForTest.getTitlesLeftMenu()));
+        leftMenu.checkCountItem(7);
+        leftMenu.checkTitles(dataForTest.getTitlesLeftMenu());
 
         //Step 5
-        Assert.assertTrue("В левом меню на странице [Students] пункт [Students] не является выбранным",
-                leftMenu.checkItemSelected("Students"));
-        Assert.assertFalse("В левом меню на странице [Students] пункт [Students] является кликабельным",
-                leftMenu.checkItemClickable("Students"));
+        leftMenu.checkItemSelected("Students");
+        leftMenu.checkItemNotClickable("Students");
 
         //Step 6
         topNavigationMenu = studentsPage.getTopNavigationMenu();
@@ -85,33 +76,29 @@ public class TestFirst {
         SignUpBlock signUpBlock = homePage.getSignUpBlock();
         signUpBlock.clickNext();
         Alert alert = AlertHelper.getAlert(webDriver);
-        Assert.assertNotEquals("Алерт не появился на странице [Home]", null, alert);
-        Assert.assertEquals("Текст алерта на странице [Home] не соответствует ожидаемому",
-                dataForTest.getTextAlertEmptyEmail(), alert.getText());
-        alert.accept();
+        AlertHelper.checkAlert(alert);
+        AlertHelper.checkAlertText(alert, dataForTest.getTextAlertEmptyEmail());
+        AlertHelper.confirmAlert(alert);
 
         //Step 8
         signUpBlock.typeEmail(dataForTest.getNotValidEmail());
         signUpBlock.clickNext();
         alert = AlertHelper.getAlert(webDriver);
-        Assert.assertNotEquals("Алерт не появился на странице [Home]", null, alert);
-        Assert.assertEquals("Текст алерта на странице [Home] не соответствует ожидаемому",
-                dataForTest.getTextAlertNotValidEmail(), alert.getText());
-        alert.accept();
+        AlertHelper.checkAlert(alert);
+        AlertHelper.checkAlertText(alert, dataForTest.getTextAlertNotValidEmail());
+        AlertHelper.confirmAlert(alert);
 
         //Step 9
         topNavigationMenu = homePage.getTopNavigationMenu();
         topNavigationMenu.typeSearchInput(dataForTest.getTextForSearch());
         topNavigationMenu.clickSearch();
         SearchPage searchPage = new SearchPage(webDriver);
-        Assert.assertFalse("Список результов поиска на отобразился на странице [Search]",
-                searchPage.checkListResultsIsEmpty());
+        searchPage.checkListResultsIsNotEmpty();
 
         //Step 10
         String name = searchPage.clickOnRandomResultItem();
         ProductPage productPage = new ProductPage(webDriver);
-        Assert.assertTrue("Заголовок страницы [Product] не соответствует заданному",
-                productPage.checkNameOfProduct(name));
+        productPage.checkHeaderText(name);
 
         //Step 11
         topNavigationMenu = searchPage.getTopNavigationMenu();
@@ -122,11 +109,8 @@ public class TestFirst {
         resourcesList = homePage.getResourcesList();
         WindowHelper.saveCurrentWindows(webDriver);
         resourcesList.clickItem("Institutions");
-        boolean isNewWindow = WindowHelper.switchNewWindow(webDriver);
-        Assert.assertTrue("Страница не открылась в новой вкладке", isNewWindow);
-        String currentUrl = webDriver.getCurrentUrl();
-        Assert.assertEquals("URL страницы [Institutions] не соответствует ожидаемому",
-                dataForTest.getUrlInstitutionsPage(), currentUrl);
+        WindowHelper.switchNewWindow(webDriver);
+        AssertHelper.checkCurrentUrl(webDriver, dataForTest.getUrlInstitutionsPage());
     }
 
     @After

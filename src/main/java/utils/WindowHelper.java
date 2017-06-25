@@ -1,5 +1,6 @@
 package utils;
 
+import org.junit.Assert;
 import org.openqa.selenium.WebDriver;
 
 import java.util.Set;
@@ -23,11 +24,13 @@ public class WindowHelper {
         log.info(String.format("Выполняем переключение в новое окно"));
         Set<String> newWindows = driver.getWindowHandles();
         newWindows.removeAll(windows);
-        if (newWindows.isEmpty()){
-            return false;
+        boolean flag = false;
+        if (!newWindows.isEmpty()){
+            String newWindow = newWindows.iterator().next();
+            driver.switchTo().window(newWindow);
+            flag = true;
         }
-        String newWindow = newWindows.iterator().next();
-        driver.switchTo().window(newWindow);
-        return true;
+        Assert.assertTrue("Страница не открылась в новой вкладке", flag);
+        return flag;
     }
 }

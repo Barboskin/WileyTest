@@ -1,6 +1,7 @@
 package pages;
 
 import blocks.SearchResultItem;
+import org.junit.Assert;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
 import ru.yandex.qatools.htmlelements.annotations.Name;
@@ -37,9 +38,11 @@ public class SearchPage extends AbstractWileyPage {
         return randomItem.clickOnName();
     }
 
-    public boolean checkListResultsIsEmpty(){
+    public boolean checkListResultsIsNotEmpty(){
         log.info(String.format("Проверяем наличие списка результатов поиска"));
         boolean flag = ListHelper.isEmpty(listResultItems);
+        Assert.assertFalse("Список результов поиска на отобразился на странице",
+                flag);
         return flag;
     }
 }

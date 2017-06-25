@@ -1,6 +1,7 @@
 package blocks;
 
 import custom_type.LeftMenuButton;
+import org.junit.Assert;
 import org.openqa.selenium.support.FindBy;
 import ru.yandex.qatools.htmlelements.annotations.Name;
 import ru.yandex.qatools.htmlelements.element.HtmlElement;
@@ -23,9 +24,13 @@ public class LeftMenu extends HtmlElement {
     @FindBy(xpath = ".//ul[@class = 'autonavLevel1']/li")
     private List<LeftMenuButton> listLeftMenuButton;
 
-    public int getCountItem(){
-        log.info(String.format("Получаем количество элементов списка кнопок левого меню"));
-        return listLeftMenuButton.size();
+    public int checkCountItem(int expected){
+        int actual = listLeftMenuButton.size();
+        log.info(String.format("Проверяем количество элементов левого меню. Ожидаемое: [%d]. Актуальные: [%d]",
+                expected, actual));
+        Assert.assertEquals("Количество элементов левого меню не соответствует ожидаемому",
+                expected, actual);
+        return actual;
     }
 
     public boolean checkTitles(List<String> expectedList){
@@ -33,20 +38,27 @@ public class LeftMenu extends HtmlElement {
         log.info(String.format("Проверяем значения кнопок левого меню. Ожидаемые: [%s]. Актуальные: [%s]",
                 expectedList.toString(), actualList.toString()));
         boolean flag = ListHelper.compareListStringByContent(actualList, expectedList);
+        Assert.assertTrue("Названия кнопок левого меню не соответсвуют ожидаемым", flag);
         return flag;
     }
 
-   public boolean checkItemSelected(String itemText){
-       log.info(String.format("Проверяем является ли элемент с текстом [%s] текущим выбранным",
-               itemText));
+    public boolean checkItemSelected(String itemText) {
+        log.info(String.format("Проверяем является ли элемент с текстом [%s] текущим выбранным",
+                itemText));
         TypifiedElement item = ListHelper.getTypifiedElementByText(listLeftMenuButton, itemText);
-        return item.isSelected();
+        boolean flag = item.isSelected();
+        Assert.assertTrue(String.format("В левом меню пункт c текстом [%s] не является выбранным", itemText),
+                flag);
+        return flag;
     }
 
-    public boolean checkItemClickable(String itemText){
-        log.info(String.format("Проверяем является ли элемент с текстом [%s] кликабельным",
+    public boolean checkItemNotClickable(String itemText){
+        log.info(String.format("Проверяем является ли элемент с текстом [%s] некликабельным",
                 itemText));
         LeftMenuButton item = (LeftMenuButton) ListHelper.getTypifiedElementByText(listLeftMenuButton, itemText);
-        return item.isClickable();
+        boolean flag = item.isClickable();
+        Assert.assertFalse(String.format("В левом меню пункт c текстом [%s] является кликабельны", itemText),
+                flag);
+        return flag;
     }
 }

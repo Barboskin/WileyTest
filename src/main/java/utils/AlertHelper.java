@@ -1,5 +1,6 @@
 package utils;
 
+import org.junit.Assert;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.WebDriver;
 
@@ -22,10 +23,17 @@ public class AlertHelper {
         }
     }
 
-    public static String getAlertText(Alert alert){
+    public static void checkAlert(Alert alert){
+        Assert.assertNotEquals("Алерт не появился на текущей странице", null, alert);
+    }
+
+    public static String checkAlertText(Alert alert, String expected){
         log.info(String.format("Получем текст из алерта"));
         if (alert != null){
-            return alert.getText();
+            String actual = alert.getText();;
+            Assert.assertEquals("Текст алерта на текущей странице не соответствует ожидаемому",
+                    expected, actual);
+            return actual;
         } else {
             throw new RuntimeException("Невозможно получить текст алерта");
         }

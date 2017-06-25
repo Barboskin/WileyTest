@@ -1,5 +1,6 @@
 package blocks;
 
+import org.junit.Assert;
 import org.openqa.selenium.support.FindBy;
 import ru.yandex.qatools.htmlelements.annotations.Name;
 import ru.yandex.qatools.htmlelements.element.Button;
@@ -23,9 +24,13 @@ public class ResourcesList extends HtmlElement {
     @FindBy(xpath = ".//li")
     private List<Button> listResourcesButton;
 
-    public int getCountItem(){
-        log.info(String.format("Получаем количество элементов списка ресурсов"));
-        return listResourcesButton.size();
+    public int checkCountItem(int expected){
+        int actual = listResourcesButton.size();
+        log.info(String.format("Проверяем количество элементов списка ресурсов. Ожидаемое: [%d]. Актуальные: [%d]",
+                expected, actual));
+        Assert.assertEquals("Количество элементов списка ресурсов не соответствует ожидаемому",
+                expected, actual);
+        return actual;
     }
 
     public boolean checkTitles(List<String> expectedList){
@@ -33,6 +38,7 @@ public class ResourcesList extends HtmlElement {
         log.info(String.format("Проверяем значения списка ресурсов. Ожидаемые: [%s]. Актуальные: [%s]",
                 expectedList.toString(), actualList.toString()));
         boolean flag = ListHelper.compareListStringByContent(actualList, expectedList);
+        Assert.assertTrue("Названия элементов в списке ресурсов не соответсвуют ожидаемым", flag);
         return flag;
     }
 
